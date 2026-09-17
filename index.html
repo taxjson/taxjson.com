@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>taxjson — capital gains and superficial-loss math from your broker's CSVs</title>
+<meta name="description" content="taxjson turns brokerage exports into Canadian and US capital-gains books: average-cost ACB, superficial-loss and wash-sale rules across all your accounts, options and corporate actions, T1135 and Schedule 3 / Form 8949 exports. Runs on your machine; every rule cites its CRA or IRS source.">
+<meta name="theme-color" content="#0f6e56">
+<meta property="og:title" content="taxjson — capital gains and superficial-loss math from your broker's CSVs">
+<meta property="og:description" content="Local, open-source, cited. Drop in IBKR, Questrade, RBC, Webull, Kraken or Coinbase exports and get the numbers for Schedule 3 — with the superficial-loss rule applied across every account you own.">
+<meta property="og:url" content="https://taxjson.github.io">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><img src="favicon.svg" alt=""> taxjson</a>
+    <nav>
+      <a href="#how">How it works</a>
+      <a class="opt" href="#rules">Rules</a>
+      <a class="opt" href="#verify">Verification</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/taxjson/taxjson">GitHub</a>
+    </nav>
+  </header>
+</div>
+
+<section class="hero"><div class="wrap hero-grid">
+  <div>
+    <p class="eyebrow">Open source · Canada and US · runs on your machine</p>
+    <h1>Your broker's CSV in. Schedule 3 out.</h1>
+    <p class="lede">taxjson computes capital gains the way the CRA and IRS actually define them: one average-cost pool per security across <b>all</b> of your accounts, the superficial-loss rule checked against your RRSP and TFSA too, options premiums folded where IT-479R says they go, splits, spin-offs and mergers handled with elections you choose. Nothing leaves your computer.</p>
+    <div class="cmd"><pre id="heroCmd">bash -c "$(curl -fsSL https://taxjson.github.io/install.sh)"</pre><button type="button" data-copy="heroCmd">Copy</button></div>
+    <p class="small" style="margin:0 0 22px">One line on Linux or macOS. Then <code>taxjson init</code> in an empty folder, drop your exports into <code>inputs/</code>, and <code>taxjson run</code>.</p>
+    <div class="cta"><a class="btn primary" href="#install">Get started</a><a class="btn ghost" href="https://github.com/taxjson/taxjson">Source on GitHub</a></div>
+  </div>
+  <figure class="term" style="margin:0" aria-label="Illustration: the taxjson sum report">
+    <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">taxjson sum</span></div>
+<pre>REALIZED-GAINS SUMMARY — CAD, tax year 2026, basis: <span class="g">wash-adjusted</span>
+
+TAXABLE ACCOUNTS
+ACCOUNT        STOCK     OPTION   REALIZED   DIVIDEND      FEES
+margin     18,204.10   2,310.00  20,514.10   4,120.55    412.30
+crypto      1,975.42       0.00   1,975.42       0.00     61.18
+<span class="d">--------------------------------------------------------------</span>
+SUBTOTAL   20,179.52   2,310.00  22,489.52   4,120.55    473.48
+
+<span class="w">NOTE:</span> 2 superficial loss(es) denied — $1,236.40 deferred
+      into the RRSP repurchase (see wash_radar_margin.rpt)</pre>
+  </figure>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <p class="eyebrow">How it works</p>
+  <h2>Three steps, all on disk</h2>
+  <div class="steps">
+    <div class="step"><h3>Export</h3><p>Download the activity CSV from each broker — IBKR Flex, Questrade, RBC Direct Investing, Webull, Kraken, Coinbase — and drop it into <code>inputs/&lt;account&gt;/</code>. Registered accounts are declared as sheltered in one config file.</p></div>
+    <div class="step"><h3>Run</h3><p><code>taxjson run</code> parses every file, converts at the Bank of Canada rate for each trade date, pools identical securities, applies splits and corporate actions, then runs the superficial-loss pass across taxable <i>and</i> registered accounts.</p></div>
+    <div class="step"><h3>Read</h3><p>Per-account summaries, the wash radar ("safe to sell at a loss?"), harvest candidates, T1135, a tax estimate, and form-ready exports for Schedule 3 or Form 8949 land in <code>reports/</code>. Every number traces back to the rows that produced it.</p></div>
+  </div>
+  <p class="note">Tax year, country, province and base currency live in <code>taxjson.toml</code>. Manual history goes in plain-text <code>.tt</code> files for anything a broker didn't export — an old position, a transfer in, a custody move.</p>
+</div></section>
+
+<section class="dark" id="rules"><div class="wrap">
+  <p class="eyebrow">Rules with receipts</p>
+  <h2>Every rule cites its source</h2>
+  <p class="lede">Tax software usually asks you to trust it. taxjson ships <a href="https://github.com/taxjson/taxjson/blob/main/REFERENCES.md">REFERENCES.md</a>: each computation names the section of the Act and the CRA or IRS document it follows — and each thing it deliberately does <b>not</b> do names the provision it skips.</p>
+  <div class="grid" style="margin-top:22px">
+    <div class="card"><h3>Superficial loss, across accounts</h3><p>s.54 / s.40(2)(g) / s.53(1)(f), with the RRSP and TFSA treated as affiliated persons (s.251.1). A loss denied because the plan repurchased is reported as permanently denied, not quietly deferred.</p></div>
+    <div class="card"><h3>Identical properties</h3><p>s.47 average cost, IT-387R2: a US listing and its TSX listing are the same pool; a CDR is not. Trades settle on the settlement date, as T4037 says.</p></div>
+    <div class="card"><h3>Options and assignments</h3><p>IT-479R: premium on an assigned put reduces the shares' cost; on an exercised put it reduces the proceeds; expiries are losses of the premium.</p></div>
+    <div class="card"><h3>Corporate actions</h3><p>Splits, spin-offs (s.86.1), mergers with the s.85.1 rollover election, return of capital, reinvested distributions — with the election recorded and the filing reminder printed at every run.</p></div>
+    <div class="card"><h3>US wash sales</h3><p>IRC §1091 with the Reg. 1.1091-1 matching, §1223(3) holding-period tacking, Rev. Rul. 2008-5 for IRA repurchases, Rev. Rul. 66-7 for the one-year test.</p></div>
+    <div class="card"><h3>Crypto</h3><p>Property, per the CRA guide: every swap, spend and gift is a disposition at fair value; identical-property pooling and the superficial-loss rule apply per coin.</p></div>
+  </div>
+</div></section>
+
+<section id="verify"><div class="wrap">
+  <p class="eyebrow">Verification</p>
+  <h2>Checked against the one thing that can't lie: your broker's positions</h2>
+  <p class="lede">Internal reports can all agree and still be wrong. <code>taxjson sanity</code> compares the positions the books say you hold against the positions your broker says you hold, account by account. Any difference is either a trade that hasn't reached the CSV yet or a booking problem — there is no third kind. <code>taxjson run</code> finishes with that check.</p>
+  <div class="grid" style="margin-top:22px">
+    <div class="card"><h3>2,100 tests</h3><p>Every fix lands with a regression test that failed before it. No mocks for tax math.</p></div>
+    <div class="card"><h3>Three property fuzzers</h3><p>Conservation of gains under the superficial-loss rule, transfer-netting, and split-during-settlement books, thousands of random ledgers per run.</p></div>
+    <div class="card"><h3>Published limits</h3><p><a href="https://github.com/taxjson/taxjson/blob/main/KNOWN_ISSUES.md">KNOWN_ISSUES.md</a> lists what is out of scope and what to do by hand, with the citation.</p></div>
+  </div>
+</div></section>
+
+<section id="brokers"><div class="wrap">
+  <p class="eyebrow">Brokers</p>
+  <h2>Reads the exports you already have</h2>
+  <div class="chips">
+    <span class="chip">Interactive Brokers (Flex / activity)</span><span class="chip">Questrade</span><span class="chip">RBC Direct Investing</span><span class="chip">Webull</span><span class="chip">Kraken</span><span class="chip">Coinbase</span><span class="chip">Plain-text .tt for anything else</span>
+  </div>
+  <p class="note">Questrade and IBKR Flex statements can be fetched directly with <code>taxjson fetch</code>. Every parser accounts for every row it reads: rows it recognises but doesn't translate are counted and named, never silently dropped.</p>
+</div></section>
+
+<section class="dark" id="install"><div class="wrap">
+  <p class="eyebrow">Install</p>
+  <h2>Your first books in ten minutes</h2>
+  <div class="cmd"><pre id="installCmd">bash -c "$(curl -fsSL https://taxjson.github.io/install.sh)"</pre><button type="button" data-copy="installCmd">Copy</button></div>
+  <p class="small">Installs the latest release into <code>~/.local/share/taxjson</code> with its own Python environment and links <code>taxjson</code> into <code>~/.local/bin</code>. Re-run to upgrade. Needs git and Python 3.9+; nothing else. <code>TAXJSON_CHANNEL=dev</code> tracks the development branch.</p>
+<pre class="block" style="margin-top:20px">mkdir -p ~/taxes/2026 &amp;&amp; cd ~/taxes/2026
+taxjson init                 # writes taxjson.toml and inputs/
+# drop broker CSVs into inputs/margin/, inputs/rrsp/, …
+taxjson run                  # books, reports, wash pass, sanity check
+taxjson sum                  # the realized-gains summary
+taxjson wash-radar           # "can I sell this at a loss today?"</pre>
+  <p class="note">Prefer a clone? <code>git clone https://github.com/taxjson/taxjson &amp;&amp; cd taxjson &amp;&amp; scripts/dev-setup.sh</code>. The full pipeline reaches the Bank of Canada (FX rates) and, for unpriced crypto rows, Yahoo Finance; <code>TAXJSON_OFFLINE=1</code> forbids both. No broker credential is ever stored or sent anywhere but that broker.</p>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <p class="eyebrow">Frequently asked</p>
+  <h2>Before you file</h2>
+  <div class="warn" style="margin-bottom:22px">taxjson is a calculator, not tax advice. It applies published rules to the rows you give it and shows its work; the return is yours, and a professional should review anything unusual — elections, cross-border reorganisations, business-income questions.</div>
+  <details><summary>Does it send my data anywhere?</summary><p>No. Parsing, pooling and the wash pass all run locally. The only network calls are FX rates from the Bank of Canada and crypto prices from Yahoo Finance for rows the export didn't price, and both can be disabled. <a href="https://github.com/taxjson/taxjson/blob/main/SECURITY.md">SECURITY.md</a> lists every egress.</p></details>
+  <details><summary>Canada or US?</summary><p>Both engines ship. Canada is average-cost ACB with the superficial-loss rule and settlement-date timing; the US engine is FIFO with §1091 wash sales, short/long-term classification and Form 8949 codes. One project, one country.</p></details>
+  <details><summary>What about the tax years I already filed?</summary><p><code>taxjson filed</code> locks the numbers you filed; later runs flag any drift so an engine fix or a late row shows up as a candidate for an adjustment rather than a silent change.</p></details>
+  <details><summary>My broker isn't listed.</summary><p>Parsers are small, self-contained modules with a row-accounting contract; a new one is a contribution most people can make in an afternoon, and the plain-text <code>.tt</code> format covers you in the meantime.</p></details>
+  <details><summary>How is it verified?</summary><p>A 2,100-test suite that every change must pass, three property fuzzers, an audit log in the changelog, and — the one that matters — <code>taxjson sanity</code> against your broker's own position export.</p></details>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="links">
+    <a href="https://github.com/taxjson/taxjson">GitHub</a>
+    <a href="https://github.com/taxjson/taxjson#readme">README</a>
+    <a href="https://github.com/taxjson/taxjson/blob/main/REFERENCES.md">References</a>
+    <a href="https://github.com/taxjson/taxjson/blob/main/KNOWN_ISSUES.md">Known issues</a>
+    <a href="https://github.com/taxjson/taxjson/blob/main/CHANGELOG.md">Changelog</a>
+    <a href="https://github.com/taxjson/taxjson/blob/main/SECURITY.md">Security</a>
+  </div>
+  <p>MIT licensed. Not affiliated with the Canada Revenue Agency, the IRS, or any broker named above.</p>
+</div></footer>
+
+<script>
+document.querySelectorAll("button[data-copy]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var t = document.getElementById(b.getAttribute("data-copy")).textContent;
+    navigator.clipboard.writeText(t).then(function () {
+      var was = b.textContent; b.textContent = "Copied"; setTimeout(function () { b.textContent = was; }, 1400);
+    });
+  });
+});
+</script>
+</body>
+</html>
