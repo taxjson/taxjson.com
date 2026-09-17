@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# https://taxjson.github.io/install.sh — runs the installer from the taxjson repository.
+# https://taxjson.com/install.sh — runs the installer from the taxjson repository.
 set -euo pipefail
 SRC="https://raw.githubusercontent.com/taxjson/taxjson/main/install.sh"
 SCRIPT="$(curl -fsSL "$SRC")" || { echo "Could not download the installer from $SRC — check your connection and try again." >&2; exit 1; }

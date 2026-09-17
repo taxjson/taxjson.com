@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0f6e56">
 <meta property="og:title" content="taxjson — capital gains and superficial-loss math from your broker's CSVs">
 <meta property="og:description" content="Local, open-source, cited. Drop in IBKR, Questrade, RBC, Webull, Kraken or Coinbase exports and get the numbers for Schedule 3 — with the superficial-loss rule applied across every account you own.">
-<meta property="og:url" content="https://taxjson.github.io">
+<meta property="og:url" content="https://taxjson.com">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -31,7 +31,7 @@
     <p class="eyebrow">Open source · Canada and US · runs on your machine</p>
     <h1>Your broker's CSV in. Schedule 3 out.</h1>
     <p class="lede">taxjson computes capital gains the way the CRA and IRS actually define them: one average-cost pool per security across <b>all</b> of your accounts, the superficial-loss rule checked against your RRSP and TFSA too, options premiums folded where IT-479R says they go, splits, spin-offs and mergers handled with elections you choose. Nothing leaves your computer.</p>
-    <div class="cmd"><pre id="heroCmd">bash -c "$(curl -fsSL https://taxjson.github.io/install.sh)"</pre><button type="button" data-copy="heroCmd">Copy</button></div>
+    <div class="cmd"><pre id="heroCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre><button type="button" data-copy="heroCmd">Copy</button></div>
     <p class="small" style="margin:0 0 22px">One line on Linux or macOS. Then <code>taxjson init</code> in an empty folder, drop your exports into <code>inputs/</code>, and <code>taxjson run</code>.</p>
     <div class="cta"><a class="btn primary" href="#install">Get started</a><a class="btn ghost" href="https://github.com/taxjson/taxjson">Source on GitHub</a></div>
   </div>
@@ -99,7 +99,7 @@ SUBTOTAL   20,179.52   2,310.00  22,489.52   4,120.55    473.48
 <section class="dark" id="install"><div class="wrap">
   <p class="eyebrow">Install</p>
   <h2>Your first books in ten minutes</h2>
-  <div class="cmd"><pre id="installCmd">bash -c "$(curl -fsSL https://taxjson.github.io/install.sh)"</pre><button type="button" data-copy="installCmd">Copy</button></div>
+  <div class="cmd"><pre id="installCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre><button type="button" data-copy="installCmd">Copy</button></div>
   <p class="small">Installs the latest release into <code>~/.local/share/taxjson</code> with its own Python environment and links <code>taxjson</code> into <code>~/.local/bin</code>. Re-run to upgrade. Needs git and Python 3.9+; nothing else. <code>TAXJSON_CHANNEL=dev</code> tracks the development branch.</p>
 <pre class="block" style="margin-top:20px">mkdir -p ~/taxes/2026 &amp;&amp; cd ~/taxes/2026
 taxjson init                 # writes taxjson.toml and inputs/
