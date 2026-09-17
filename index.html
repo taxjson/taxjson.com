@@ -32,7 +32,7 @@
     <h1>Your broker's CSV in. Schedule 3 out.</h1>
     <p class="lede">taxjson computes capital gains the way the CRA and IRS actually define them: one average-cost pool per security across <b>all</b> of your accounts, the superficial-loss rule checked against your RRSP and TFSA too, options premiums folded where IT-479R says they go, splits, spin-offs and mergers handled with elections you choose. Nothing leaves your computer.</p>
     <div class="cmd"><pre id="heroCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre><button type="button" data-copy="heroCmd">Copy</button></div>
-    <p class="small" style="margin:0 0 22px">One line on Linux or macOS. Then <code>taxjson init</code> in an empty folder, drop your exports into <code>inputs/</code>, and <code>taxjson run</code>.</p>
+    <p class="small" style="margin:0 0 22px">One line on Linux or macOS. Then <code>taxjson init --country canada</code> (or <code>usa</code>) in an empty folder, drop your exports into <code>inputs/</code>, and <code>taxjson run</code>.</p>
     <div class="cta"><a class="btn primary" href="#install">Get started</a><a class="btn ghost" href="https://github.com/taxjson/taxjson">Source on GitHub</a></div>
   </div>
   <figure class="term" style="margin:0" aria-label="Illustration: the taxjson sum report">
@@ -102,7 +102,7 @@ SUBTOTAL   20,179.52   2,310.00  22,489.52   4,120.55    473.48
   <div class="cmd"><pre id="installCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre><button type="button" data-copy="installCmd">Copy</button></div>
   <p class="small">Installs the latest release into <code>~/.local/share/taxjson</code> with its own Python environment and links <code>taxjson</code> into <code>~/.local/bin</code>. Re-run to upgrade. Needs git and Python 3.9+; nothing else. <code>TAXJSON_CHANNEL=dev</code> tracks the development branch.</p>
 <pre class="block" style="margin-top:20px">mkdir -p ~/taxes/2026 &amp;&amp; cd ~/taxes/2026
-taxjson init                 # writes taxjson.toml and inputs/
+taxjson init --country canada   # or usa; writes taxjson.toml and inputs/
 # drop broker CSVs into inputs/margin/, inputs/rrsp/, …
 taxjson run                  # books, reports, wash pass, sanity check
 taxjson sum                  # the realized-gains summary
