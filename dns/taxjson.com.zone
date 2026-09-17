@@ -1,0 +1,14 @@
+; taxjson.com — GitHub Pages. Import as a BIND zone file (Cloudflare: DNS → Import and Export;
+; Squarespace/Google Domains: DNS → Import; Route 53: Import zone file). Remove any parking
+; A/CNAME records on the apex first. TTL 3600 is fine; lower it while propagating if you like.
+$ORIGIN taxjson.com.
+$TTL 3600
+@       IN  A       185.199.108.153
+@       IN  A       185.199.109.153
+@       IN  A       185.199.110.153
+@       IN  A       185.199.111.153
+@       IN  AAAA    2606:50c0:8000::153
+@       IN  AAAA    2606:50c0:8001::153
+@       IN  AAAA    2606:50c0:8002::153
+@       IN  AAAA    2606:50c0:8003::153
+www     IN  CNAME   taxjson.github.io.
