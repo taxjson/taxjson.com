@@ -20,6 +20,7 @@
       <a href="#how">How it works</a>
       <a class="opt" href="#rules">Rules</a>
       <a class="opt" href="#verify">Verification</a>
+      <a class="opt" href="#commands">Commands</a>
       <a href="#install">Install</a>
       <a href="https://github.com/taxjson/taxjson">GitHub</a>
     </nav>
@@ -81,10 +82,22 @@ SUBTOTAL   20,179.52   2,310.00  22,489.52   4,120.55    473.48
   <h2>Checked against the one thing that can't lie: your broker's positions</h2>
   <p class="lede">Internal reports can all agree and still be wrong. <code>taxjson sanity</code> compares the positions the books say you hold against the positions your broker says you hold, account by account. Any difference is either a trade that hasn't reached the CSV yet or a booking problem — there is no third kind. <code>taxjson run</code> finishes with that check.</p>
   <div class="grid" style="margin-top:22px">
-    <div class="card"><h3>2,100 tests</h3><p>Every fix lands with a regression test that failed before it. No mocks for tax math.</p></div>
+    <div class="card"><h3>2,100+ tests</h3><p>Every fix lands with a regression test that failed before it. No mocks for tax math. Eight audit rounds plus a pre-release security audit, every finding reproduced before it was fixed.</p></div>
     <div class="card"><h3>Three property fuzzers</h3><p>Conservation of gains under the superficial-loss rule, transfer-netting, and split-during-settlement books, thousands of random ledgers per run.</p></div>
     <div class="card"><h3>Published limits</h3><p><a href="https://github.com/taxjson/taxjson/blob/main/KNOWN_ISSUES.md">KNOWN_ISSUES.md</a> lists what is out of scope and what to do by hand, with the citation.</p></div>
   </div>
+</div></section>
+
+<section id="commands"><div class="wrap">
+  <p class="eyebrow">Commands</p>
+  <h2>One pipeline, a few dozen views on it</h2>
+  <div class="grid">
+    <div class="card"><h3>Build the books</h3><p><code>init</code> scaffolds a project, <code>fetch</code> pulls Questrade and IBKR activity, <code>run</code> parses, converts, pools, applies corporate actions and the wash pass, and ends with the broker cross-check.</p></div>
+    <div class="card"><h3>Read the numbers</h3><p><code>sum</code> for the year, <code>list</code> and <code>shares</code> for positions, <code>events</code> / <code>trades</code> / <code>divs</code> for the rows behind them, <code>audit</code> for the justification of every gain.</p></div>
+    <div class="card"><h3>Before you trade</h3><p><code>wash-radar</code>, <code>sell-check</code> and <code>buy-check</code> answer "is this safe from the superficial-loss rule today?"; <code>harvest</code> lists the losses worth taking.</p></div>
+    <div class="card"><h3>Before you file</h3><p><code>estimate</code> and <code>instalments</code>, <code>form-export</code> for Schedule 3 / Form 8949, <code>t1135</code>, <code>carryover</code>, <code>reconcile-slips</code> against the T5008, and <code>close-year</code> to lock what you filed.</p></div>
+  </div>
+  <p class="note">Every command takes <code>--help</code>; most take <code>--json</code>. The full table is in the <a href="https://github.com/taxjson/taxjson#subcommands">README</a>; a twelve-slide overview is in the <a href="https://github.com/taxjson/taxjson/blob/main/docs/deck/taxjson-deck.pdf">deck</a>.</p>
 </div></section>
 
 <section id="brokers"><div class="wrap">
@@ -118,7 +131,7 @@ taxjson wash-radar           # "can I sell this at a loss today?"</pre>
   <details><summary>Canada or US?</summary><p>Canada is the supported product: average-cost ACB with the superficial-loss rule and settlement-date timing, validated against real multi-account books and the brokers' own positions. A US engine ships too — FIFO with §1091 wash sales, short/long-term classification and Form 8949 codes — but it is <b>experimental</b>: unit-tested, never validated on a real account. Use it as a draft, and if you have real US exports, <code>taxjson redact</code> them and send them in.</p></details>
   <details><summary>What about the tax years I already filed?</summary><p><code>taxjson filed</code> locks the numbers you filed; later runs flag any drift so an engine fix or a late row shows up as a candidate for an adjustment rather than a silent change.</p></details>
   <details><summary>My broker isn't listed.</summary><p>Parsers are small, self-contained modules with a row-accounting contract; a new one is an afternoon's work <i>given a real export</i>. Run <code>taxjson redact</code> on yours — it strips account numbers and names while keeping every row shape — and attach the copy to an issue. The plain-text <code>.tt</code> format covers you in the meantime.</p></details>
-  <details><summary>How is it verified?</summary><p>A 2,100-test suite that every change must pass, three property fuzzers, an audit log in the changelog, and — the one that matters — <code>taxjson sanity</code> against your broker's own position export.</p></details>
+  <details><summary>How is it verified?</summary><p>A 2,100+-test suite that every change must pass, three property fuzzers, eight audit rounds logged in the changelog, and — the one that matters — <code>taxjson sanity</code> against your broker's own position export. Every computation names its ITA / CRA / IRC source in <a href="https://github.com/taxjson/taxjson/blob/main/REFERENCES.md">REFERENCES.md</a>.</p></details>
 </div></section>
 
 <footer><div class="wrap">
@@ -128,6 +141,7 @@ taxjson wash-radar           # "can I sell this at a loss today?"</pre>
     <a href="https://github.com/taxjson/taxjson/blob/main/REFERENCES.md">References</a>
     <a href="https://github.com/taxjson/taxjson/blob/main/KNOWN_ISSUES.md">Known issues</a>
     <a href="https://github.com/taxjson/taxjson/blob/main/CHANGELOG.md">Changelog</a>
+    <a href="https://github.com/taxjson/taxjson/blob/main/docs/deck/taxjson-deck.pdf">Slide deck</a>
     <a href="https://github.com/taxjson/taxjson/blob/main/SECURITY.md">Security</a>
   </div>
   <p>MIT licensed. Not affiliated with the Canada Revenue Agency, the IRS, or any broker named above.</p>
