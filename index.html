@@ -36,19 +36,18 @@
     <p class="small" style="margin:0 0 22px">One line on Linux or macOS. Then <code>taxjson init --country canada</code> (or <code>usa</code>) in an empty folder, drop your exports into <code>inputs/</code>, and <code>taxjson run</code>.</p>
     <div class="cta"><a class="btn primary" href="#install">Get started</a><a class="btn ghost" href="https://github.com/taxjson/taxjson">Source on GitHub</a></div>
   </div>
-  <figure class="term" style="margin:0" aria-label="Illustration: the taxjson sum report">
+  <figure class="term" style="margin:0" aria-label="Illustration: the FOR THE RETURN block of taxjson sum (synthetic numbers)">
     <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">taxjson sum</span></div>
-<pre>REALIZED-GAINS SUMMARY — CAD, tax year 2026, basis: <span class="g">wash-adjusted</span>
+<pre>FOR THE RETURN — taxable accounts (crypto, margin), CAD (Schedule 3, tax year 2025)
+SCHEDULE 3 LINE                      PROCEEDS   COST(ACB)    GAIN
+Line 4 shares (13199/13200)        412,380.10  392,045.63  20,334.47
+Line 6 options (15199/15300)        18,940.00   16,630.00   2,310.00
+Line 7 crypto-assets (15200/15301)  24,112.75   22,137.33   1,975.42
+<span class="d">------------------------------------------------------------------</span>
+RETURN                             455,432.85  430,812.96  24,619.89
 
-TAXABLE ACCOUNTS
-ACCOUNT        STOCK     OPTION   REALIZED   DIVIDEND      FEES
-margin     18,204.10   2,310.00  20,514.10   4,120.55    412.30
-crypto      1,975.42       0.00   1,975.42       0.00     61.18
-<span class="d">--------------------------------------------------------------</span>
-SUBTOTAL   20,179.52   2,310.00  22,489.52   4,120.55    473.48
-
-<span class="w">NOTE:</span> 2 superficial loss(es) denied — $1,236.40 deferred
-      into the RRSP repurchase (see wash_radar_margin.rpt)</pre>
+<span class="w">NOTE:</span> 1 superficial loss denied — $1,236.40, permanently: the RRSP
+      bought 200 sh inside the window and still held them at its end</pre>
   </figure>
 </div></section>
 
@@ -57,7 +56,7 @@ SUBTOTAL   20,179.52   2,310.00  22,489.52   4,120.55    473.48
   <h2>Three steps, all on disk</h2>
   <div class="steps">
     <div class="step"><h3>Export</h3><p>Download the activity CSV from each broker — IBKR Flex, Questrade, RBC Direct Investing, Webull, Kraken, Coinbase — and drop it into <code>inputs/&lt;account&gt;/</code>. Registered accounts are declared as sheltered in one config file.</p></div>
-    <div class="step"><h3>Run</h3><p><code>taxjson run</code> parses every file, converts at the Bank of Canada rate for each trade date, pools identical securities, applies splits and corporate actions, then runs the superficial-loss pass across taxable <i>and</i> registered accounts.</p></div>
+    <div class="step"><h3>Run</h3><p><code>taxjson run</code> parses every file, converts at the Bank of Canada rate for each settlement date (Valet API), pools identical securities, applies splits and corporate actions, then runs the superficial-loss pass across taxable <i>and</i> registered accounts.</p></div>
     <div class="step"><h3>Read</h3><p>Per-account summaries, the wash radar ("safe to sell at a loss?"), harvest candidates, T1135, a tax estimate, and form-ready exports for Schedule 3 or Form 8949 land in <code>reports/</code>. Every number traces back to the rows that produced it.</p></div>
   </div>
   <p class="note">Tax year, country, province and base currency live in <code>taxjson.toml</code>. Manual history goes in plain-text <code>.tt</code> files for anything a broker didn't export — an old position, a transfer in, a custody move.</p>
@@ -80,7 +79,7 @@ SUBTOTAL   20,179.52   2,310.00  22,489.52   4,120.55    473.48
 <section id="verify"><div class="wrap">
   <p class="eyebrow">Verification</p>
   <h2>Checked against the one thing that can't lie: your broker's positions</h2>
-  <p class="lede">Internal reports can all agree and still be wrong. <code>taxjson sanity</code> compares the positions the books say you hold against the positions your broker says you hold, account by account. Any difference is either a trade that hasn't reached the CSV yet or a booking problem — there is no third kind. <code>taxjson run</code> finishes with that check.</p>
+  <p class="lede">Internal reports can all agree and still be wrong. <code>taxjson sanity</code> compares the positions the books say you hold against the positions your broker says you hold, account by account. Any difference is either a trade that hasn't reached the CSV yet or a booking problem — there is no third kind. <code>taxjson run</code> finishes with that check once each account names its broker positions file (<code>holdings = [...]</code>).</p>
   <div class="grid" style="margin-top:22px">
     <div class="card"><h3>2,100+ tests</h3><p>Every fix lands with a regression test that failed before it. No mocks for tax math. Eight audit rounds plus a pre-release security audit, every finding reproduced before it was fixed.</p></div>
     <div class="card"><h3>Three property fuzzers</h3><p>Conservation of gains under the superficial-loss rule, transfer-netting, and split-during-settlement books, thousands of random ledgers per run.</p></div>
@@ -121,14 +120,14 @@ taxjson run                  # books, reports, wash pass, sanity check
 taxjson sum                  # the realized-gains summary
 taxjson wash-radar           # "can I sell this at a loss today?"
 taxjson checklist            # at year end: is everything ready to file?</pre>
-  <p class="note">Prefer a clone? <code>git clone https://github.com/taxjson/taxjson &amp;&amp; cd taxjson &amp;&amp; scripts/dev-setup.sh</code>. The full pipeline reaches the Bank of Canada (FX rates) and, for unpriced crypto rows, Yahoo Finance; <code>TAXJSON_OFFLINE=1</code> forbids both. No broker credential is ever stored or sent anywhere but that broker.</p>
+  <p class="note">Prefer a clone? <code>git clone https://github.com/taxjson/taxjson &amp;&amp; cd taxjson &amp;&amp; scripts/dev-setup.sh</code>. The full pipeline reaches the Bank of Canada (FX rates) and Yahoo Finance (FX before 2017, and prices for unpriced crypto rows); <code>TAXJSON_OFFLINE=1</code> forbids both. <code>harvest</code> and <code>scan --online</code> also fetch current prices, and <code>fetch</code> talks to your broker. No broker credential is ever stored or sent anywhere but that broker.</p>
 </div></section>
 
 <section id="faq"><div class="wrap">
   <p class="eyebrow">Frequently asked</p>
   <h2>Before you file</h2>
   <div class="warn" style="margin-bottom:22px">taxjson is a calculator, not tax advice. It applies published rules to the rows you give it and shows its work; the return is yours, and a professional should review anything unusual — elections, cross-border reorganisations, business-income questions.</div>
-  <details><summary>Does it send my data anywhere?</summary><p>No. Parsing, pooling and the wash pass all run locally. The only network calls are FX rates from the Bank of Canada and crypto prices from Yahoo Finance for rows the export didn't price, and both can be disabled. <a href="https://github.com/taxjson/taxjson/blob/main/SECURITY.md">SECURITY.md</a> lists every egress.</p></details>
+  <details><summary>Does it send my data anywhere?</summary><p>No. Parsing, pooling and the wash pass all run locally. The pipeline's only network calls are FX rates from the Bank of Canada (Yahoo Finance for dates before 2017) and crypto prices from Yahoo Finance for rows the export didn't price, and both can be disabled. <code>harvest</code> and <code>scan --online</code> look up current prices, so Yahoo sees those ticker symbols; <code>fetch</code> talks only to your broker. <a href="https://github.com/taxjson/taxjson/blob/main/SECURITY.md">SECURITY.md</a> lists every egress.</p></details>
   <details><summary>Canada or US?</summary><p>Canada is the supported product: average-cost ACB with the superficial-loss rule and settlement-date timing, validated against real multi-account books and the brokers' own positions. A US engine ships too — FIFO with §1091 wash sales, short/long-term classification and Form 8949 codes — but it is <b>experimental</b>: unit-tested, never validated on a real account. Use it as a draft, and if you have real US exports, <code>taxjson redact</code> them and send them in.</p></details>
   <details><summary>How do I know I'm ready to file?</summary><p><code>taxjson checklist</code>. It is the <a href="https://github.com/taxjson/taxjson/blob/main/docs/filing.md">filing checklist</a> as a command: each step is proved by running the command behind it — a clean run, the broker cross-check, no missing cost basis, every disposition audited, the T5008 reconciled, no year-end option needing an amendment — and the steps only you can confirm are marked with <code>--done</code>. <code>--walk</code> takes you through the open ones.</p></details>
   <details><summary>What about the tax years I already filed?</summary><p><code>taxjson close-year</code> locks the numbers you filed; <code>check-filed</code> and every later run flag any drift so an engine fix or a late row shows up as a candidate for an adjustment rather than a silent change.</p></details>
