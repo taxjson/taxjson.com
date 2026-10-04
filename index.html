@@ -126,7 +126,7 @@ RETURN                             455,432.85  430,812.96  24,619.89
   <p class="eyebrow">Install</p>
   <h2>Your first books in ten minutes</h2>
   <div class="cmd"><pre id="installCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre><button type="button" data-copy="installCmd">Copy</button></div>
-  <p class="small">Installs the latest release into <code>~/.local/share/taxjson</code> with its own Python environment and links <code>taxjson</code> and its short name <code>tjs</code> into <code>~/.local/bin</code>. Re-run to upgrade. Needs git and Python 3.9+; nothing else. <code>TAXJSON_CHANNEL=dev</code> tracks the development branch.</p>
+  <p class="small">Installs the <code>stable</code> release into <code>~/.local/share/taxjson</code> with its own Python environment and links <code>taxjson</code> and its short name <code>tjs</code> into <code>~/.local/bin</code>. Re-run to upgrade. Needs git and Python 3.9+; nothing else. Add <code>_ --channel beta</code> (or <code>latest</code>, <code>dev</code> for the development branch, or a version like <code>v0.16.0</code>) to pick another channel; the installer remembers it, so re-running upgrades along the same channel.</p>
   <p class="small">With the Questrade / IBKR auto-fetch plugin (an install that has it keeps it on upgrade):</p>
   <div class="cmd"><pre id="fetchCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)" _ --with-fetch</pre><button type="button" data-copy="fetchCmd">Copy</button></div>
 <pre class="block" style="margin-top:20px">mkdir -p ~/taxes/2026 &amp;&amp; cd ~/taxes/2026
