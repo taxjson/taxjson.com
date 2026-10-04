@@ -40,7 +40,7 @@
     <p class="eyebrow">Open source · Canada (US engine experimental) · runs on your machine</p>
     <h1>Your broker's CSV in. Schedule 3 out.</h1>
     <p class="lede">taxjson computes capital gains the way the CRA and IRS actually define them: one average-cost pool per security across <b>all</b> of your accounts, the superficial-loss rule checked against your RRSP and TFSA too, written-option premiums recognised in the year written as s.49 says, renames as dated events, splits, spin-offs and mergers handled with elections you choose. Nothing leaves your computer.</p>
-    <div class="cmd"><pre id="heroCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre><button type="button" data-copy="heroCmd">Copy</button></div>
+    <div class="cmd"><pre id="heroCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre></div>
     <p class="small" style="margin:0 0 22px">One line on Linux or macOS; it installs <code>taxjson</code> and its short name <code>tjs</code>. Then <code>tjs init --country canada</code> (or <code>usa</code>) in an empty folder, drop your exports into <code>inputs/</code>, and <code>tjs run</code>.</p>
     <div class="cta"><a class="btn primary" href="#install">Get started</a><a class="btn ghost" href="https://github.com/taxjson/taxjson">Source on GitHub</a></div>
   </div>
@@ -132,10 +132,10 @@ RETURN                             455,432.85  430,812.96  24,619.89
 <section class="dark" id="install"><div class="wrap">
   <p class="eyebrow">Install</p>
   <h2>Your first books in ten minutes</h2>
-  <div class="cmd"><pre id="installCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre><button type="button" data-copy="installCmd">Copy</button></div>
+  <div class="cmd"><pre id="installCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre></div>
   <p class="small">Installs the <code>stable</code> release into <code>~/.local/share/taxjson</code> with its own Python environment and links <code>taxjson</code> and its short name <code>tjs</code> into <code>~/.local/bin</code>. Re-run to upgrade. Needs git and Python 3.9+; nothing else. Add <code>_ --channel beta</code> (or <code>latest</code>, <code>dev</code> for the development branch, or a version like <code>v0.16.0</code>) to pick another channel; the installer remembers it, so re-running upgrades along the same channel.</p>
   <p class="small">With the Questrade / IBKR auto-fetch plugin (an install that has it keeps it on upgrade):</p>
-  <div class="cmd"><pre id="fetchCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)" _ --with-fetch</pre><button type="button" data-copy="fetchCmd">Copy</button></div>
+  <div class="cmd"><pre id="fetchCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)" _ --with-fetch</pre></div>
 <pre class="block" style="margin-top:20px">mkdir -p ~/taxes/2026 &amp;&amp; cd ~/taxes/2026
 tjs init --country canada   # or usa; taxjson.toml, ticker.map, inputs/
 # drop broker CSVs into inputs/margin/, inputs/rrsp/, …
@@ -183,15 +183,5 @@ tjs checklist               # at year end: is everything ready to file?</pre>
   <p>MIT licensed. Not affiliated with the Canada Revenue Agency, the IRS, or any broker named above.</p>
 </div></footer>
 
-<script>
-document.querySelectorAll("button[data-copy]").forEach(function (b) {
-  b.addEventListener("click", function () {
-    var t = document.getElementById(b.getAttribute("data-copy")).textContent;
-    navigator.clipboard.writeText(t).then(function () {
-      var was = b.textContent; b.textContent = "Copied"; setTimeout(function () { b.textContent = was; }, 1400);
-    });
-  });
-});
-</script>
 </body>
 </html>
