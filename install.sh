@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 # https://taxjson.com/install.sh — runs the taxjson installer.
 #   bash -c "$(curl -fsSL https://taxjson.com/install.sh)"
-#   bash -c "$(curl -fsSL https://taxjson.com/install.sh)" _ --with-fetch
+#   bash -c "$(curl -fsSL https://taxjson.com/install.sh)" _ --without-fetch
 #   bash -c "$(curl -fsSL https://taxjson.com/install.sh)" _ --channel beta
-# Arguments (--with-fetch, --channel ...) and the TAXJSON_* environment
-# knobs pass through.
+# Arguments (--channel ..., --without-fetch, and the older --with-fetch)
+# and the TAXJSON_* environment knobs pass through. The installer
+# installs the taxjson-fetch plugin by default; --without-fetch leaves it
+# out (an installer from before that default installs the core only, so
+# the flag is dropped for it).
 #
 # The installer comes from the release `stable` names (channels.json on
 # taxjson's main branch), not from main: a change to install.sh reaches
@@ -47,5 +50,12 @@ SCRIPT="$(get "$SRC")"
 if [ "$REF" != main ] && [ -n "$ASKED" ] && ! printf '%s' "$SCRIPT" | grep -q -- '--channel'; then
   die "The stable release ($REF) has an installer from before release channels.
 Re-run without --channel / TAXJSON_CHANNEL (it installs the newest release), or use --channel dev."
+fi
+# An installer from before fetch-by-default knows no --without-fetch;
+# it installs the core only, which is what the flag asks for.
+if ! printf '%s' "$SCRIPT" | grep -q -- '--without-fetch'; then
+  ARGS=()
+  for a in "$@"; do [ "$a" = --without-fetch ] || ARGS+=("$a"); done
+  set -- ${ARGS[@]+"${ARGS[@]}"}
 fi
 exec bash -c "$SCRIPT" install.sh "$@"

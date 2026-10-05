@@ -126,7 +126,7 @@ RETURN                             455,432.85  430,812.96  24,619.89
   <div class="chips">
     <span class="chip">Interactive Brokers (Flex / activity)</span><span class="chip">Questrade</span><span class="chip">RBC Direct Investing</span><span class="chip">Webull</span><span class="chip">Kraken</span><span class="chip">Coinbase</span><span class="chip">Plain-text .tt for anything else</span>
   </div>
-  <p class="note">Questrade and IBKR Flex activity can be downloaded directly with <code>tjs fetch</code> once the optional <b>taxjson-fetch</b> plugin is installed (<code>--with-fetch</code> at install). The core itself holds no broker client and reads no credential; a fetcher for another broker is a plugin of its own. Every parser accounts for every row it reads: rows it recognises but doesn't translate are counted and named, never silently dropped.</p>
+  <p class="note">Questrade and IBKR Flex activity can be downloaded directly with <code>tjs fetch</code> through the <b>taxjson-fetch</b> plugin, a separate package the installer installs by default (<code>--without-fetch</code> leaves it out). The core itself holds no broker client and reads no credential; a fetcher for another broker is a plugin of its own. Every parser accounts for every row it reads: rows it recognises but doesn't translate are counted and named, never silently dropped.</p>
 </div></section>
 
 <section class="dark" id="install"><div class="wrap">
@@ -134,8 +134,8 @@ RETURN                             455,432.85  430,812.96  24,619.89
   <h2>Your first books in ten minutes</h2>
   <div class="cmd"><pre id="installCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre></div>
   <p class="small">Installs the <code>stable</code> release into <code>~/.local/share/taxjson</code> with its own Python environment and links <code>taxjson</code> and its short name <code>tjs</code> into <code>~/.local/bin</code>. Re-run to upgrade. Needs git and Python 3.9+; nothing else. Add <code>_ --channel beta</code> (or <code>latest</code>, <code>dev</code> for the development branch, or a version like <code>v0.16.0</code>) to pick another channel; the installer remembers it, so re-running upgrades along the same channel.</p>
-  <p class="small">With the Questrade / IBKR auto-fetch plugin (an install that has it keeps it on upgrade):</p>
-  <div class="cmd"><pre id="fetchCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)" _ --with-fetch</pre></div>
+  <p class="small">The Questrade / IBKR auto-fetch plugin comes with it; it contacts a broker only when you run <code>tjs fetch</code> for a configured account. To leave it out (remembered on upgrade; <code>_ --with-fetch</code> puts it back):</p>
+  <div class="cmd"><pre id="fetchCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)" _ --without-fetch</pre></div>
 <pre class="block" style="margin-top:20px">mkdir -p ~/taxes/2026 &amp;&amp; cd ~/taxes/2026
 tjs init --country canada   # or usa; taxjson.toml, ticker.map, inputs/
 # drop broker CSVs into inputs/margin/, inputs/rrsp/, …
