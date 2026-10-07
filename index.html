@@ -41,7 +41,7 @@
     <h1>Your broker's CSV in. Schedule 3 out.</h1>
     <p class="lede">taxjson computes capital gains the way the CRA and IRS actually define them: one average-cost pool per security across <b>all</b> of your accounts, the superficial-loss rule checked against your RRSP and TFSA too, written-option premiums recognised in the year written as s.49 says, renames as dated events, splits, spin-offs and mergers handled with elections you choose. Nothing leaves your computer.</p>
     <div class="cmd"><pre id="heroCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre></div>
-    <p class="small" style="margin:0 0 22px">One line on Linux or macOS; it installs <code>taxjson</code> and its short name <code>tjs</code>. Then <code>tjs init --country canada</code> (or <code>usa</code>) in an empty folder, drop your exports into <code>inputs/</code>, and <code>tjs run</code>.</p>
+    <p class="small" style="margin:0 0 22px">One line on Linux or macOS; it installs <code>taxjson</code> and its short name <code>tjs</code>. Then <code>tjs init --country canada</code> (or <code>usa</code>) in an empty folder, drop your exports into <code>inputs/</code>, and <code>tjs run</code>. Not sure what comes next? <code>tjs quick-start</code> lists every step and, in a project, marks what is done and names the next one.</p>
     <div class="cta"><a class="btn primary" href="#install">Get started</a><a class="btn ghost" href="https://github.com/taxjson/taxjson">Source on GitHub</a></div>
   </div>
   <figure class="term" style="margin:0" aria-label="Illustration: the FOR THE RETURN block of taxjson sum (synthetic numbers)">
@@ -138,6 +138,7 @@ RETURN                             455,432.85  430,812.96  24,619.89
   <div class="cmd"><pre id="fetchCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)" _ --without-fetch</pre></div>
 <pre class="block" style="margin-top:20px">mkdir -p ~/taxes/2026 &amp;&amp; cd ~/taxes/2026
 tjs init --country canada   # or usa; taxjson.toml, ticker.map, inputs/
+tjs quick-start             # every step: what is done, what is next
 # drop broker CSVs into inputs/margin/, inputs/rrsp/, …
 tjs run                     # books, reports, wash pass, broker check
 tjs sum                     # the year, by Schedule 3 line
