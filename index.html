@@ -41,7 +41,7 @@
     <h1>Your broker's CSV in. Schedule 3 out.</h1>
     <p class="lede">taxjson computes capital gains the way the CRA and IRS actually define them: one average-cost pool per security across <b>all</b> of your accounts, the superficial-loss rule checked against your RRSP and TFSA too, written-option premiums recognised in the year written as s.49 says, renames as dated events, splits, spin-offs and mergers handled with elections you choose. Nothing leaves your computer.</p>
     <div class="cmd"><pre id="heroCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)"</pre></div>
-    <p class="small" style="margin:0 0 22px">One line on Linux or macOS; it installs <code>taxjson</code> and its short name <code>tjs</code>. Then <code>tjs init --country canada</code> (or <code>usa</code>) in an empty folder, drop your exports into <code>inputs/</code>, and <code>tjs run</code>. Not sure what comes next? <code>tjs checklist</code> lists every step and, in a project, checks what is done and names the next one.</p>
+    <p class="small" style="margin:0 0 22px">One line on Linux or macOS; it installs <code>taxjson</code> and its short name <code>tjs</code>. Then <code>tjs init --country canada</code> (or <code>usa</code>) in an empty folder, drop every year's exports into <code>inputs/</code>, and <code>tjs run</code> in this year's folder (<code>2026/</code>). Not sure what comes next? <code>tjs checklist</code> lists every step and, in a project, checks what is done and names the next one.</p>
     <div class="cta"><a class="btn primary" href="#install">Get started</a><a class="btn ghost" href="https://github.com/taxjson/taxjson">Source on GitHub</a></div>
   </div>
   <figure class="term" style="margin:0" aria-label="Illustration: the FOR THE RETURN block of taxjson sum (synthetic numbers)">
@@ -136,10 +136,11 @@ RETURN                             455,432.85  430,812.96  24,619.89
   <p class="small">Installs the <code>stable</code> release into <code>~/.local/share/taxjson</code> with its own Python environment and links <code>taxjson</code> and its short name <code>tjs</code> into <code>~/.local/bin</code>. Re-run to upgrade. Needs git and Python 3.9+; nothing else. Add <code>_ --channel beta</code> (or <code>latest</code>, <code>dev</code> for the development branch, or a version like <code>v0.16.0</code>) to pick another channel; the installer remembers it, so re-running upgrades along the same channel.</p>
   <p class="small">The Questrade / IBKR auto-fetch plugin comes with it; it contacts a broker only when you run <code>tjs fetch</code> for a configured account. To leave it out (remembered on upgrade; <code>_ --with-fetch</code> puts it back):</p>
   <div class="cmd"><pre id="fetchCmd">bash -c "$(curl -fsSL https://taxjson.com/install.sh)" _ --without-fetch</pre></div>
-<pre class="block" style="margin-top:20px">mkdir -p ~/taxes/2026 &amp;&amp; cd ~/taxes/2026
-tjs init --country canada   # or usa; taxjson.toml, ticker.map, inputs/
+<pre class="block" style="margin-top:20px">mkdir -p ~/taxes &amp;&amp; cd ~/taxes
+tjs init --country canada   # or usa; inputs/ for every year, 2026/ for this one
+cd 2026                     # each year's folder: its taxjson.toml, ticker.map, results
 tjs checklist               # every step: what is done, what is next
-# drop broker CSVs into inputs/margin/, inputs/rrsp/, …
+# drop broker CSVs, all years together, into ../inputs/margin/, ../inputs/rrsp/, …
 tjs run                     # books, reports, wash pass, broker check
 tjs sum                     # the year, by Schedule 3 line
 tjs wash-radar              # "can I sell this at a loss today?"
