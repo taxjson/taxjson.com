@@ -44,23 +44,195 @@
     <p class="small" style="margin:0 0 22px">One line on Linux or macOS; it installs <code>taxjson</code> and its short name <code>tjs</code>. Try it first on made-up exports: <code>tjs init --demo ~/taxjson-demo</code>. For your own books, <code>tjs init --country canada</code> (or <code>usa</code>) in the folder for your taxes, drop every year's exports into <code>inputs/</code>, and <code>tjs run</code> in this year's folder (<code>2026/</code>). Not sure what comes next? <code>tjs checklist</code> lists every step and, in a project, checks what is done and names the next one.</p>
     <div class="cta"><a class="btn primary" href="#install">Get started</a><a class="btn ghost" href="https://github.com/taxjson/taxjson">Source on GitHub</a></div>
   </div>
-  <figure class="term" style="margin:0" aria-label="The FOR THE RETURN block of tjs sum on the demo project (made-up exports, synthetic figures)">
+  <figure class="term hero-term" style="margin:0" aria-label="The FOR THE RETURN block of tjs sum on the demo project (made-up exports, synthetic figures), as a narrow terminal prints it">
     <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">tjs sum &nbsp;·&nbsp; tjs init --demo, tax year 2024</span></div>
-<pre>FOR THE RETURN — taxable accounts (crypto, ib, margin, questrade,
-webull), CAD (Schedule 3, tax year 2024)
-<span class="d">GAIN = PROCEEDS − COST(ACB) − OUTLAYS, the allowed gain;
-superficial losses denied: 64.71.</span>
+<pre><span class="g">FOR THE RETURN — taxable accounts (crypto, ib, margin,</span>
+questrade, webull), CAD (Schedule 3, tax year 2024)
+<span class="d">GAIN = PROCEEDS − COST(ACB) − OUTLAYS, the allowed gain;</span>
+<span class="d">superficial losses denied: 467.49.</span>
 shares &amp; fund units (P1) (10689/10690)
   proceeds 71,112.60   cost(acb) 63,568.08   outlays 14.89<!-- pii-ok synthetic demo -->
   gain 7,529.63   denied 0.00<!-- pii-ok synthetic demo -->
-<span class="d">…</span>
+
+shares &amp; fund units (P2) (13199/13200)
+  proceeds 21,986.83   cost(acb) 21,432.29   outlays 11.00<!-- pii-ok synthetic demo -->
+  gain 543.54   denied 467.49
+
+options, crypto &amp; other properties (P2) (15199/15300)
+  proceeds 22,775.26   cost(acb) 15,675.27   outlays 89.20<!-- pii-ok synthetic demo -->
+  gain 7,010.79   denied 0.00<!-- pii-ok synthetic demo -->
+
 RETURN
-  proceeds 115,309.14   cost(acb) 100,111.47   outlays 113.71<!-- pii-ok synthetic demo -->
-  gain 15,083.96   denied 64.71<!-- pii-ok synthetic demo -->
+  proceeds 115,874.69   cost(acb) 100,675.64<!-- pii-ok synthetic demo -->
+  outlays 115.09   gain 15,083.96   denied 467.49<!-- pii-ok synthetic demo -->
 
 <span class="w">!</span> 1 sale with no purchase NOT in these totals (SAMPG.US) — tjs find-missing-history
-<span class="w">!</span> FX on foreign cash (line 15300): not in the rows; its estimate is NOT RELIABLE — tjs fx-cash</pre>
+<span class="w">!</span> FX on foreign cash (line 15300): not in the rows; its estimate is NOT RELIABLE — tjs fx-cash
+<span class="d">Not in the rows: T3/T5 slip capital gains (lines 17600, 17400). More: tjs sum --details</span></pre>
   </figure>
+</div></section>
+
+<section id="summary"><div class="wrap">
+  <p class="eyebrow">What you get</p>
+  <h2>Every account in one summary</h2>
+  <p class="lede">The whole of <code>tjs sum</code> on the demo project: eight made-up accounts, five taxable (an IB margin account, Questrade, Webull, crypto) and three sheltered (a TFSA, an RRSP and a locked-in LIRA). Gains, options, dividends and fees per account; the sheltered ones shown but kept out of the return; then the Schedule 3 lines, with the superficial losses denied (one of them for good, because the RRSP bought the stock back) and a <code>!</code> line for anything the totals leave out. Run <code>tjs init --demo ~/taxjson-demo</code>, <code>cd ~/taxjson-demo/2024</code>, <code>tjs run</code> and <code>tjs sum</code> to see it yourself.</p>
+  <figure class="term sum-term" aria-label="The full output of tjs sum on the demo project (made-up exports, synthetic figures)">
+    <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">tjs sum &nbsp;·&nbsp; tjs init --demo, tax year 2024 &nbsp;·&nbsp; synthetic figures</span></div>
+<pre class="sum-wide"><span class="g">REALIZED-GAINS SUMMARY — CAD, tax year 2024, basis: wash-adjusted</span>
+<span class="d">REALIZED = NON-OPT (shares, units, futures, crypto) + OPTION; TOTAL = REALIZED + DIVIDEND + PIL.</span>
+<span class="d">DIVIDEND of crypto is staking rewards: ordinary income, not dividends.</span>
+
+<span class="g">TAXABLE ACCOUNTS</span>
+ACCOUNT      NON-OPT    OPTION   REALIZED  DIVIDEND   PIL    FEES      TOTAL
+<span class="d">----------------------------------------------------------------------------</span>
+crypto      5,439.28      0.00   5,439.28     23.85  0.00  150.09   5,463.13<!-- pii-ok synthetic demo -->
+ib          3,032.88      0.00   3,032.88    102.22  0.00    6.90   3,135.10<!-- pii-ok synthetic demo -->
+margin         64.67    206.36     271.03    681.75  0.00    8.28     952.78
+questrade   2,718.25      0.00   2,718.25     24.69  0.00   31.99   2,742.94<!-- pii-ok synthetic demo -->
+webull      2,257.37  1,365.14   3,622.51      0.00  0.00   39.58   3,622.51<!-- pii-ok synthetic demo -->
+<span class="d">----------------------------------------------------------------------------</span>
+SUBTOTAL   13,512.45  1,571.50  15,083.95    832.51  0.00  236.84  15,916.46<!-- pii-ok synthetic demo -->
+
+<span class="g">SHELTERED ACCOUNTS — not taxable</span>
+ACCOUNT    NON-OPT   OPTION  REALIZED  DIVIDEND   PIL   FEES     TOTAL
+<span class="d">----------------------------------------------------------------------</span>
+lira        235.15     0.00    235.15    420.00  0.00  19.80    655.15
+rrsp        471.51  -275.27    196.24    132.93  0.00   7.65    329.17
+tfsa      3,143.45     0.00  3,143.45    528.00  0.00  39.80  3,671.45<!-- pii-ok synthetic demo -->
+<span class="d">----------------------------------------------------------------------</span>
+SUBTOTAL  3,850.11  -275.27  3,574.84  1,080.93  0.00  67.25  4,655.77<!-- pii-ok synthetic demo -->
+
+<span class="g">ALL ACCOUNTS — sheltered included</span>
+ACCOUNT      NON-OPT    OPTION   REALIZED  DIVIDEND   PIL    FEES      TOTAL
+<span class="d">----------------------------------------------------------------------------</span>
+crypto      5,439.28      0.00   5,439.28     23.85  0.00  150.09   5,463.13<!-- pii-ok synthetic demo -->
+ib          3,032.88      0.00   3,032.88    102.22  0.00    6.90   3,135.10<!-- pii-ok synthetic demo -->
+lira          235.15      0.00     235.15    420.00  0.00   19.80     655.15
+margin         64.67    206.36     271.03    681.75  0.00    8.28     952.78
+questrade   2,718.25      0.00   2,718.25     24.69  0.00   31.99   2,742.94<!-- pii-ok synthetic demo -->
+rrsp          471.51   -275.27     196.24    132.93  0.00    7.65     329.17
+tfsa        3,143.45      0.00   3,143.45    528.00  0.00   39.80   3,671.45<!-- pii-ok synthetic demo -->
+webull      2,257.37  1,365.14   3,622.51      0.00  0.00   39.58   3,622.51<!-- pii-ok synthetic demo -->
+<span class="d">----------------------------------------------------------------------------</span>
+TOTAL      17,362.56  1,296.23  18,658.79  1,913.44  0.00  304.09  20,572.23<!-- pii-ok synthetic demo -->
+
+<span class="g">FOR THE RETURN — taxable accounts (crypto, ib, margin, questrade, webull), CAD (Schedule 3, tax year</span>
+2024)
+<span class="d">GAIN = PROCEEDS − COST(ACB) − OUTLAYS, the allowed gain; superficial losses denied: 467.49.</span>
+SCHEDULE 3 LINE                                          PROCEEDS   COST(ACB)  OUTLAYS       GAIN
+<span class="d">-------------------------------------------------------------------------------------------------</span>
+shares &amp; fund units (P1) (10689/10690)                  71,112.60   63,568.08    14.89   7,529.63<!-- pii-ok synthetic demo -->
+shares &amp; fund units (P2) (13199/13200)                  21,986.83   21,432.29    11.00     543.54<!-- pii-ok synthetic demo -->
+options, crypto &amp; other properties (P2) (15199/15300)   22,775.26   15,675.27    89.20   7,010.79<!-- pii-ok synthetic demo -->
+<span class="d">-------------------------------------------------------------------------------------------------</span>
+RETURN                                                 115,874.69  100,675.64   115.09  15,083.96<!-- pii-ok synthetic demo -->
+
+<span class="w">!</span> 1 sale with no purchase NOT in these totals (SAMPG.US) — tjs find-missing-history
+<span class="w">!</span> FX on foreign cash (line 15300): not in the rows; its estimate is NOT RELIABLE — tjs fx-cash
+<span class="d">Not in the rows: T3/T5 slip capital gains (lines 17600, 17400). More: tjs sum --details</span></pre>
+<pre class="sum-narrow"><span class="g">REALIZED-GAINS SUMMARY — CAD, tax year 2024, basis: wash-adjusted</span>
+<span class="d">REALIZED = NON-OPT (shares, units, futures, crypto) +</span>
+<span class="d">OPTION; TOTAL = REALIZED + DIVIDEND + PIL.</span>
+<span class="d">DIVIDEND of crypto is staking rewards: ordinary income, not</span>
+<span class="d">dividends.</span>
+
+<span class="g">TAXABLE ACCOUNTS</span>
+crypto
+  non-opt 5,439.28   option 0.00   realized 5,439.28<!-- pii-ok synthetic demo -->
+  dividend 23.85   pil 0.00   fees 150.09   total 5,463.13<!-- pii-ok synthetic demo -->
+
+ib
+  non-opt 3,032.88   option 0.00   realized 3,032.88<!-- pii-ok synthetic demo -->
+  dividend 102.22   pil 0.00   fees 6.90   total 3,135.10<!-- pii-ok synthetic demo -->
+
+margin
+  non-opt 64.67   option 206.36   realized 271.03
+  dividend 681.75   pil 0.00   fees 8.28   total 952.78
+
+questrade
+  non-opt 2,718.25   option 0.00   realized 2,718.25<!-- pii-ok synthetic demo -->
+  dividend 24.69   pil 0.00   fees 31.99   total 2,742.94<!-- pii-ok synthetic demo -->
+
+webull
+  non-opt 2,257.37   option 1,365.14   realized 3,622.51<!-- pii-ok synthetic demo -->
+  dividend 0.00   pil 0.00   fees 39.58   total 3,622.51<!-- pii-ok synthetic demo -->
+
+SUBTOTAL
+  non-opt 13,512.45   option 1,571.50   realized 15,083.95<!-- pii-ok synthetic demo -->
+  dividend 832.51   pil 0.00   fees 236.84   total 15,916.46<!-- pii-ok synthetic demo -->
+
+<span class="g">SHELTERED ACCOUNTS — not taxable</span>
+ACCOUNT    NON-OPT   OPTION  REALIZED  DIVIDEND     TOTAL
+<span class="d">---------------------------------------------------------</span>
+lira        235.15     0.00    235.15    420.00    655.15
+rrsp        471.51  -275.27    196.24    132.93    329.17
+tfsa      3,143.45     0.00  3,143.45    528.00  3,671.45<!-- pii-ok synthetic demo -->
+<span class="d">---------------------------------------------------------</span>
+SUBTOTAL  3,850.11  -275.27  3,574.84  1,080.93  4,655.77<!-- pii-ok synthetic demo -->
+
+<span class="g">ALL ACCOUNTS — sheltered included</span>
+crypto
+  non-opt 5,439.28   option 0.00   realized 5,439.28<!-- pii-ok synthetic demo -->
+  dividend 23.85   pil 0.00   fees 150.09   total 5,463.13<!-- pii-ok synthetic demo -->
+
+ib
+  non-opt 3,032.88   option 0.00   realized 3,032.88<!-- pii-ok synthetic demo -->
+  dividend 102.22   pil 0.00   fees 6.90   total 3,135.10<!-- pii-ok synthetic demo -->
+
+lira
+  non-opt 235.15   option 0.00   realized 235.15
+  dividend 420.00   pil 0.00   fees 19.80   total 655.15
+
+margin
+  non-opt 64.67   option 206.36   realized 271.03
+  dividend 681.75   pil 0.00   fees 8.28   total 952.78
+
+questrade
+  non-opt 2,718.25   option 0.00   realized 2,718.25<!-- pii-ok synthetic demo -->
+  dividend 24.69   pil 0.00   fees 31.99   total 2,742.94<!-- pii-ok synthetic demo -->
+
+rrsp
+  non-opt 471.51   option -275.27   realized 196.24
+  dividend 132.93   pil 0.00   fees 7.65   total 329.17
+
+tfsa
+  non-opt 3,143.45   option 0.00   realized 3,143.45<!-- pii-ok synthetic demo -->
+  dividend 528.00   pil 0.00   fees 39.80   total 3,671.45<!-- pii-ok synthetic demo -->
+
+webull
+  non-opt 2,257.37   option 1,365.14   realized 3,622.51<!-- pii-ok synthetic demo -->
+  dividend 0.00   pil 0.00   fees 39.58   total 3,622.51<!-- pii-ok synthetic demo -->
+
+TOTAL
+  non-opt 17,362.56   option 1,296.23   realized 18,658.79<!-- pii-ok synthetic demo -->
+  dividend 1,913.44   pil 0.00   fees 304.09<!-- pii-ok synthetic demo -->
+  total 20,572.23<!-- pii-ok synthetic demo -->
+
+<span class="g">FOR THE RETURN — taxable accounts (crypto, ib, margin,</span>
+questrade, webull), CAD (Schedule 3, tax year 2024)
+<span class="d">GAIN = PROCEEDS − COST(ACB) − OUTLAYS, the allowed gain;</span>
+<span class="d">superficial losses denied: 467.49.</span>
+shares &amp; fund units (P1) (10689/10690)
+  proceeds 71,112.60   cost(acb) 63,568.08   outlays 14.89<!-- pii-ok synthetic demo -->
+  gain 7,529.63   denied 0.00<!-- pii-ok synthetic demo -->
+
+shares &amp; fund units (P2) (13199/13200)
+  proceeds 21,986.83   cost(acb) 21,432.29   outlays 11.00<!-- pii-ok synthetic demo -->
+  gain 543.54   denied 467.49
+
+options, crypto &amp; other properties (P2) (15199/15300)
+  proceeds 22,775.26   cost(acb) 15,675.27   outlays 89.20<!-- pii-ok synthetic demo -->
+  gain 7,010.79   denied 0.00<!-- pii-ok synthetic demo -->
+
+RETURN
+  proceeds 115,874.69   cost(acb) 100,675.64<!-- pii-ok synthetic demo -->
+  outlays 115.09   gain 15,083.96   denied 467.49<!-- pii-ok synthetic demo -->
+
+<span class="w">!</span> 1 sale with no purchase NOT in these totals (SAMPG.US) — tjs find-missing-history
+<span class="w">!</span> FX on foreign cash (line 15300): not in the rows; its estimate is NOT RELIABLE — tjs fx-cash
+<span class="d">Not in the rows: T3/T5 slip capital gains (lines 17600, 17400). More: tjs sum --details</span></pre>
+  </figure>
+  <p class="note">On a narrow terminal <code>tjs sum</code> stacks each account's figures, as above on a phone; <code>tjs sum &lt;account&gt;</code> shows one account, <code>tjs sum --details</code> what the short view leaves out.</p>
 </div></section>
 
 <section id="how"><div class="wrap">
